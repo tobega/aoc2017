@@ -1,0 +1,54 @@
+/spiraldistance {
+  dup sqrt ceiling 2 div floor 2 mul dup 3 1 roll
+  dup 1 add dup mul
+  4 {3 copy 1 index sub} repeat
+  13 -3 1 {4 1 roll exch pop sub abs exch 1 roll} for
+  4 {2 copy gt {exch} if pop} repeat
+  sub
+} def
+
+/middle {
+  dup 3 {back index} repeat 3 {add} repeat
+} def
+
+/turncorner {
+  dup back index add
+  /back back 2 add def
+  dup 2 index back index side 1 gt {back index add} if add add
+  1 1 side 2 sub {pop middle} for
+  side 1 gt {dup back index back index add add} if
+} def
+
+/perimeter {
+  /back side side mul side 2 sub dup mul sub def
+  dup back dup 0 gt {index add} {pop} ifelse
+  /back back 2 add def
+  side 1 gt {dup 2 index back index back index add add add} if
+  1 1 side 3 sub {pop middle} for
+  side 1 gt {dup back index back index add add} if
+  turncorner
+  turncorner
+  turncorner
+  back 2 sub index add
+  dup back index back index add add
+  /old
+  side side mul
+  side 1 gt {side 2 sub dup mul sub} if
+  def
+  side side mul
+  /side side 2 add def
+  side side mul exch sub
+  /new exch def
+  old new add new roll
+  old {pop} repeat
+} def
+
+/find {
+  /given exch def
+  /side 1 def 1
+  {dup given gt {exit} if perimeter} loop
+  {1 index given lt {exit} if pop} loop
+} def
+
+277678 dup spiraldistance == find == quit
+

@@ -1,0 +1,1 @@
+slc -c advent3.sl -o advent3 --main && g++ -O2 advent3.cpp -o A3 -lslrt -ltbb -lpthread&& ./A3

@@ -1,0 +1,12 @@
+(input5) (r) file /in exch def
+{in 10 string readline {cvi} {exit} ifelse} loop pop
+count /size exch def
+/pos 1 def /steps 0 def
+size -1 roll
+{steps 1 add /steps exch def
+dup pos add /pos exch def
+pos size gt {clear steps exit} if
+dup 1 add exch
+size exch neg roll
+} loop
+

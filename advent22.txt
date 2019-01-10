@@ -1,0 +1,69 @@
+let grid = new Map();
+let direction = {dx: 0, dy: 1};
+let position = {x: 0, y: 0};
+let infected = 0;
+
+function turnLeft() {
+  direction = {dx: -direction.dy, dy: direction.dx};
+}
+
+function turnRight() {
+  direction = {dx: direction.dy, dy: -direction.dx};
+}
+
+function markInfected(p) {
+  grid.set(JSON.stringify(p), "#");
+}
+
+function burst() {
+  let key = JSON.stringify(position);
+  let status = grid.get(key);
+  switch (status) {
+    case undefined: // clean
+      turnLeft();
+      grid.set(key, ":"); // weaken
+      break;
+    case ":": // weakened, no turn
+      grid.set(key, "#"); // infect
+      infected++;
+      break;
+    case "#": // infected
+      grid.set(key, "+"); // flag
+      turnRight();
+      break;
+    case "+": // flagged
+      grid.delete(key); // clean
+      turnRight(); turnRight();
+      break;
+  }
+      
+  position.x += direction.dx;
+  position.y += direction.dy;
+}
+
+let s = "";
+process.stdin.on('readable', () => {
+  let chunk = process.stdin.read();
+  if (chunk !== null) s += chunk.toString();
+});
+
+process.stdin.on('end', () => {
+  let centre = s.trim().split("\n");
+  let yTop = Math.floor(centre.length / 2);
+  let xLeft = -Math.floor(centre[0].length / 2);
+  for (let y = yTop; centre.length > 0; y--) {
+    let row = centre.shift();
+    for (let x = 0; x  < row.length; x++) {
+      let c = row.charAt(x);
+      if (c === "#") {
+        markInfected({x: xLeft + x, y: y});
+      }
+    }
+  }
+
+  for (let i=0; i < 10000000; i++) {
+    burst();
+  }
+console.log(infected);
+});
+
